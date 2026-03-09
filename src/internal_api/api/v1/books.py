@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends
-from src.services.books.get_all_books import get_all_books as service_get_all_books
-from src.services.books.add_book import add_book as service_add_book
-from src.services.books.update_book import (
+from src.internal_api.services.books.get_all_books import get_all_books as service_get_all_books
+from src.internal_api.services.books.add_book import add_book as service_add_book
+from src.internal_api.services.books.update_book import (
     update_book as service_update_book,
     NotFoundException,
 )
-from src.services.books.delete_book import (
+from src.internal_api.services.books.delete_book import (
     delete_book as service_delete_book,
     NotFoundException as DeleteNotFoundException,
 )
 from uuid import UUID
 from fastapi.responses import JSONResponse
-from src.schema.BooksSchema import BooksCreate, BooksUpdate, BookResponse
+from src.internal_api.schema.BooksSchema import BooksCreate, BooksUpdate, BookResponse
 from fastapi import HTTPException
 from src.core.logging import logger
 from src.db import get_session

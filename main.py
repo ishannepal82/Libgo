@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from src.api.v1.books import books_router
+from src.api.v1.write_email import email_router
 
 from src.db import create_all_tables
 
@@ -19,9 +20,12 @@ app = FastAPI(title="LibGo",
 
 app.include_router(books_router, prefix="/books", tags=['books', 'burrow', 'add'])
 
+app.include_router(email_router, prefix="/email", tags=['email', 'send'])
+
+
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the Database Processing Engine API!"}
+    return {"message": "Welcome to LibGo API!"}
 
 if __name__ == "__main__":
     import uvicorn 

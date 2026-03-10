@@ -1,6 +1,6 @@
-from src.repos.books.books_repo import get_book_by_id, update_book as repo_update_book
+from src.internal_api.repos.books.books_repo import get_book_by_id, update_book as repo_update_book
 from src.core.logging import logger
-from src.schema.BooksSchema import BooksUpdate
+from src.internal_api.schema.BooksSchema import BooksUpdate
 
 
 class NotFoundException(Exception):

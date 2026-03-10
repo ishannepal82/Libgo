@@ -1,4 +1,4 @@
-from src.repos.books.books_repo import get_all_books as repo_get_all_books
+from src.internal_api.repos.books.books_repo import get_all_books as repo_get_all_books
 from src.core.logging import logger
 
 # Exceptions Class 

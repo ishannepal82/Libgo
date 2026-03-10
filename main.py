@@ -1,33 +1,5 @@
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
-
-from src.api.v1.books import books_router
-from src.api.v1.write_email import email_router
-
-from src.db import create_all_tables
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    create_all_tables()
-    yield
-
-
-app = FastAPI(title="LibGo", 
-              version="1.0", 
-              debug=True, 
-              description="A powerful Library management system to manage the transactions of library effiiently and effectively",
-              lifespan=lifespan)
-
-app.include_router(books_router, prefix="/books", tags=['books', 'burrow', 'add'])
-
-app.include_router(email_router, prefix="/email", tags=['email', 'send'])
-
-
-@app.get("/")
-async def root():
-    return {"message": "Welcome to LibGo API!"}
+from src.internal_api.internal_api import main as internal_main
 
 if __name__ == "__main__":
-    import uvicorn 
-    uvicorn.run(app, host="127.0.0.1", port=8000)
-
+    internal_main()
+    

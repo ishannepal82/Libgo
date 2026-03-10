@@ -1,4 +1,4 @@
-from src.repos.books.books_repo import get_book_by_id, delete_book as repo_delete_book
+from src.internal_api.repos.books.books_repo import get_book_by_id, delete_book as repo_delete_book
 from src.core.logging import logger
 
 class NotFoundException(Exception):

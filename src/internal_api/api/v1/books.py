@@ -18,7 +18,6 @@ from src.db import get_session
 
 books_router = APIRouter()
 
-
 @books_router.get("/get-all-books", response_model=list[BookResponse], status_code=200)
 def get_all_books(db=Depends(get_session)):
     try:
@@ -28,7 +27,6 @@ def get_all_books(db=Depends(get_session)):
     except Exception as e:
         logger.warning(msg=f"Something went wrong {e}")
         return HTTPException(detail="Internal Server Error", status_code=500)
-
 
 @books_router.post("/add-book", response_model=BookResponse, status_code=201)
 def add_book(book_data: BooksCreate, db=Depends(get_session)):

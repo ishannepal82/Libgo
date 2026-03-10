@@ -1,12 +1,9 @@
-from src.repos.books.books_repo import create_book as repo_create_book
-from src.repos.books.books_repo import Book
+from src.internal_api.repos.books.books_repo import (create_book as repo_create_book, Book)
 from src.core.logging import logger
-from src.schema.BooksSchema import BooksCreate
-
+from src.internal_api.schema.BooksSchema import BooksCreate
 
 class DBException(Exception):
     pass
-
 
 def add_book(book_data: BooksCreate, db):
     try:

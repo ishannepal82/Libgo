@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi import BackgroundTasks
 from fastapi import HTTPException
-from src.services.email.write_email import write_email as service_write_email
+from src.internal_api.services.email.write_email import write_email as service_write_email
 
 email_router = APIRouter()
 

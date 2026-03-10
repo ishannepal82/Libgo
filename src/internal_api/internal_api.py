@@ -5,6 +5,7 @@ import uvicorn
 from src.internal_api.api.v1.books import books_router
 from src.internal_api.api.v1.write_email import email_router
 from src.internal_api.api.v1.auth import auth_router
+from src.internal_api.api.v1.admin import admin_router
 
 from src.db import create_all_tables
 
@@ -24,6 +25,8 @@ app.include_router(books_router, prefix="/books", tags=['books', 'burrow', 'add'
 app.include_router(email_router, prefix="/email", tags=['email', 'send'])
 
 app.include_router(auth_router, prefix="/auth", tags=['auth', 'login', 'register'])
+
+app.include_router(admin_router, prefix="/admin", tags=['admin', 'staff', 'remove', 'edit'])
 
 
 @app.get("/")

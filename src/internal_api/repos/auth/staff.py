@@ -12,23 +12,22 @@ class Staff(SQLModel, table=True):
     hashed_password: str 
     phone: str
 
+def get_all_staffs(db):
+    return db.query(Staff).all()
 
 def get_staff(db, email):
     return db.query(Staff).filter(Staff.email == email).first()
 
-def remove_staff(db, email):    
-    staff = get_staff(db, email)
+def remove_staff(db, staff):    
     db.delete(staff)
     db.commit()
-
 
 def edit_staff(db, data):    
     db.commit()
     db.refresh(data)
     return data
 
-def add_staff(db, data):
-    staff = Staff(**data)
+def add_staff(db, staff):
     db.add(staff)
     db.commit()
     db.refresh(staff)

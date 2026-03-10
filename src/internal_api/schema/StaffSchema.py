@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from typing import Literal
 from uuid import UUID
 
-class CreateStaff(BaseModel):
+class StaffRegister(BaseModel):
     name: str
     email: str 
     role: Literal["Admin", "Librarian", "Staff"] 
@@ -10,6 +10,10 @@ class CreateStaff(BaseModel):
     code: str 
     phone: str 
     is_admin: bool
+
+class StaffLogin(BaseModel):
+    email: str 
+    password: str 
 
 class BaseStaff(BaseModel):
     id: UUID

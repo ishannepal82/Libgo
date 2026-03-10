@@ -16,7 +16,7 @@ class Staff(SQLModel, table=True):
 def get_staff(db, email):
     return db.query(Staff).filter(Staff.email == email).first()
 
-def remove_staff(db, email):
+def remove_staff(db, email):    
     staff = get_staff(db, email)
     db.delete(staff)
     db.commit()

@@ -1,12 +1,13 @@
 from src.internal_api.repos.auth.staff import get_staff
 from src.core.logging import logger
+from src.core.config import settings
 
 class AdminNotFoundError(Exception):
     pass 
 class StaffNotFoundError(Exception):
     pass
 
-def admin_login(db, login_data):
+def admin_login(db, login_data, auth):
     try: 
         email = login_data.get("email")
         password = login_data.get("password")
@@ -25,7 +26,8 @@ def admin_login(db, login_data):
             raise ValueError("Invalid password")
         
         logger.info("Admin logged in successfully")
-        return staff
+        access_token = auth.create_access_token(subject=staff.email)
+        return {"access_token": access_token, "token_type": "bearer"}
     except Exception as e:
         logger.error(str(e))
         raise Exception("Admin login failed")

@@ -15,18 +15,29 @@ def admin_login(login_data: StaffLogin, db=Depends(get_session)):
         logger.info("Admin Login Sucessfull!")
         return admin
     except Exception as e:
+        logger.error(str(e))
         raise HTTPException(detail="Internal Server Error", status_code=500)
     
 @auth_router.post("/staff-login")
-def staff_login():
+def staff_login(login_data: StaffLogin, db = Depends(get_session)):
     try: 
-        return {"message": "Staff login successful"}
+
+        staff = service_staff_login(db=db, login_data=login_data)
+        logger.info("Staff Login Sucessfull!")
+        return staff
     except Exception as e:
+        logger.error(str(e))
         raise HTTPException(detail="Internal Server Error", status_code=500)
     
 @auth_router.post("/staff-register")
-def staff_register():
+def staff_register(staff_data: StaffRegister, db = Depends(get_session)):
     try: 
-        return {"message": "Staff registration successful"}
+        staff = service_register_staff(
+            db=db,
+            register_data=staff_data
+        )
+        logger.info("Staff Register Sucessfull!")
+        return staff
     except Exception as e:
+        logger.error(str(e))
         raise HTTPException(detail="Internal Server Error", status_code=500)

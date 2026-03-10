@@ -4,7 +4,7 @@ from src.core.logging import logger
 class StaffNotFoundError(Exception):
     pass
 
-def staff_login(db, login_data):
+def staff_login(db, login_data, auth):
     try: 
         email = login_data.get("email")
         password = login_data.get("password")
@@ -20,7 +20,9 @@ def staff_login(db, login_data):
             raise ValueError("Invalid password")
         
         logger.info("Admin logged in successfully")
-        return staff
+
+        toekn = auth.create_access_token(subject=staff.email)
+        return {"access_token": toekn, "token_type": "bearer"}
     except Exception as e:
         logger.error(str(e))
         raise Exception("Admin login failed")

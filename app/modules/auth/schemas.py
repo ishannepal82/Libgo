@@ -39,5 +39,13 @@ class BaseStaff(BaseModel):
     is_admin: bool
 
 
-class StaffResponse(BaseStaff):
+class StaffResponse(BaseModel):
+    id: UUID
+    name: str
+    email: str
+    role: Literal["Admin", "Librarian", "Staff"]
+    code: str 
+    phone: str
+    is_admin: bool 
+
     model_config = ConfigDict(from_attributes=True)

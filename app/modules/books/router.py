@@ -11,7 +11,7 @@ from uuid import UUID
 from fastapi.responses import JSONResponse
 from app.modules.books.schemas import BooksCreate, BooksUpdate, BookResponse
 from fastapi import HTTPException
-from app.core.security import logger
+from app.core.logger import logger
 from app.db.session import get_session
 
 books_router = APIRouter()
@@ -21,11 +21,11 @@ books_router = APIRouter()
 def get_all_books(db=Depends(get_session)):
     try:
         books = service_get_all_books(db)
-        logger.info(msg="Sucessfully fetched all books")
+        logger.info(message="Sucessfully fetched all books")
         return books
     except Exception as e:
         logger.warning(message=f"Something went wrong {e}")
-        return HTTPException(detail="Internal Server Error", status_code=500)
+        raise HTTPException(detail="Internal Server Error", status_code=500)
 
 
 @books_router.post("/add-book", response_model=BookResponse, status_code=201)

@@ -1,6 +1,6 @@
 from fastapi import BackgroundTasks
 from app.core.config import settings
-from app.core.security import logger
+from app.core.logger import logger
 import aiosmtplib
 from email.mime.text import MIMEText
 

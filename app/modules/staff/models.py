@@ -1,1 +1,1 @@
-from app.modules.auth.models import Staff
+from app.modules.auth.repo import Staff

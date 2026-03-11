@@ -8,7 +8,7 @@ from app.modules.staff.service import (
 
 from fastapi import APIRouter, Depends
 from app.modules.auth.schemas import StaffRegister, StaffUpdate
-from app.core.security import logger
+from app.core.logger import logger
 from app.db.session import get_session
 from app.modules.auth.service import StaffNotFoundError
 from fastapi import HTTPException

@@ -1,4 +1,4 @@
-from app.modules.auth.models import (
+from app.modules.auth.repo import (
     add_staff as repo_add_staff,
     remove_staff as repo_remove_staff,
     edit_staff as repo_edit_staff,
@@ -7,7 +7,7 @@ from app.modules.auth.models import (
 )
 from app.modules.auth.schemas import StaffRegister, StaffUpdate
 from app.modules.auth.service import StaffNotFoundError
-from app.core.security import logger
+from app.core.logger import logger
 
 
 class StaffAlreadyExists(Exception):

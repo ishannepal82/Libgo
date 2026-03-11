@@ -1,18 +1,19 @@
-from app.core.security import logger
-from app.modules.auth.models import (
+from app.core.logger import logger
+from app.modules.auth.repo import (
     Staff,
     get_staff as repo_get_staff,
     add_staff as repo_add_staff,
 )
-from app.utils.hash_password import hash_password
+from app.utils.hash_password import hash_password, check_password
 from app.core.config import settings
+from app.modules.auth.security import create_token
 
 
 class StaffNotFoundError(Exception):
     pass
 
 
-def staff_login(db, login_data, auth):
+def staff_login(db, login_data):
     try:
         email = login_data.get("email")
         password = login_data.get("password")
@@ -23,43 +24,42 @@ def staff_login(db, login_data, auth):
         staff = repo_get_staff(db, email)
         if not staff:
             raise StaffNotFoundError("Staff not found")
-
-        if staff.hashed_password != password:
+        print(staff)
+        
+        match = check_password(password, staff.hashed_password)
+        if not match:
             raise ValueError("Invalid password")
 
         logger.info("Admin logged in successfully")
 
-        toekn = auth.create_access_token(subject=staff.email)
-        return {"access_token": toekn, "token_type": "bearer"}
+        token = create_token(login_data.email)
+        return {"access_token": token, "token_type": "bearer"}
     except Exception as e:
         logger.error(str(e))
-        raise Exception("Admin login failed")
+        raise Exception("Staff login failed")
 
 
-class AdminNotFoundError(Exception):
-    pass
-
-
-def admin_login(db, login_data, auth):
+def admin_login(db, login_data):
     try:
-        email = login_data.get("email")
-        password = login_data.get("password")
+        email = login_data.email
+        password = login_data.password
 
         if not email or not password:
             raise ValueError("Email and password are required")
 
         staff = repo_get_staff(db, email)
         if not staff:
-            raise StaffNotFoundError("Staff not found")
+            raise StaffNotFoundError("Admin not found")
 
         if not staff.is_admin:
             raise ValueError("You are not an admin")
-
-        if staff.hashed_password != password:
+        
+        match = check_password(password, staff.hashed_password)
+        if not match:
             raise ValueError("Invalid password")
 
         logger.info("Admin logged in successfully")
-        access_token = auth.create_access_token(subject=staff.email)
+        access_token = create_token(email=login_data.email)
         return {"access_token": access_token, "token_type": "bearer"}
     except Exception as e:
         logger.error(str(e))

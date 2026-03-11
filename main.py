@@ -24,11 +24,17 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.include_router(books_router, prefix="/books", tags=["books", "burrow", "add"])
+app.include_router(
+    books_router, prefix="/books", tags=["books", "burrow", "add"]
+    )
 
-app.include_router(email_router, prefix="/email", tags=["email", "send"])
+app.include_router(
+    email_router, prefix="/email", tags=["email", "send"]
+    )
 
-app.include_router(auth_router, prefix="/auth", tags=["auth", "login", "register"])
+app.include_router(
+    auth_router, prefix="/auth", tags=["auth", "login", "register"]
+    )
 
 app.include_router(
     admin_router, prefix="/admin", tags=["admin", "staff", "remove", "edit"]
@@ -41,6 +47,7 @@ async def root():
 
 
 def main():
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run("main:app", reload=True, host="127.0.0.1", port=8000)
 
-main()
+if __name__ == "__main__":
+    main()

@@ -1,4 +1,4 @@
-from app.modules.books.models import (
+from app.modules.books.repo import (
     get_all_books as repo_get_all_books,
     create_book as repo_create_book,
     Book,
@@ -6,7 +6,7 @@ from app.modules.books.models import (
     update_book as repo_update_book,
     delete_book as repo_delete_book,
 )
-from app.core.security import logger
+from app.core.logger import logger
 from app.modules.books.schemas import BooksCreate, BooksUpdate
 from uuid import UUID
 

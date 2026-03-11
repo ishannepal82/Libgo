@@ -2,12 +2,13 @@ from app.modules.books.models import (
     get_all_books as repo_get_all_books,
     create_book as repo_create_book,
     Book,
-    get_book_by_id,
+    get_book_by_id as repo_get_book_by_id,
     update_book as repo_update_book,
     delete_book as repo_delete_book,
 )
 from app.core.security import logger
 from app.modules.books.schemas import BooksCreate, BooksUpdate
+from uuid import UUID
 
 
 class DBException(Exception):
@@ -19,7 +20,7 @@ def get_all_books(db):
         books = repo_get_all_books(db_session=db)
         return books
     except Exception as e:
-        logger.error(e)
+        logger.error(str(e))
         raise DBException("Failed to fetch books from DB") from e
 
 
@@ -44,9 +45,9 @@ def add_book(book_data: BooksCreate, db):
         raise DBException("Failed to create book in DB") from e
 
 
-def update_book(book_id: str, book_data: BooksUpdate, db):
+def update_book(book_id: UUID, book_data: BooksUpdate, db):
     try:
-        book = get_book_by_id(book_id, db)
+        book = repo_get_book_by_id(book_id, db)
         if not book:
             logger.warning(f"Book not found with id: {book_id}")
             raise NotFoundException(f"Book not found with id: {book_id}")
@@ -70,9 +71,9 @@ class DeleteNotFoundException(Exception):
     pass
 
 
-def delete_book(book_id: str, db):
+def delete_book(book_id: UUID, db):
     try:
-        book = get_book_by_id(book_id, db)
+        book = repo_get_book_by_id(book_id, db)
         if not book:
             logger.warning(f"Book not found with id: {book_id}")
             raise DeleteNotFoundException(f"Book not found with id: {book_id}")

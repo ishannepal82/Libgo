@@ -1,61 +1,124 @@
 # LibGo - Library Management System
 
-LibGo is a powerful Library Management System built with FastAPI, designed to manage library transactions efficiently and effectively. It provides a RESTful API for managing books, including their metadata such as titles, authors, page counts, reviews, and likes.
+LibGo is a powerful Library Management System built with FastAPI, designed to manage library transactions efficiently and effectively. It provides a RESTful API for managing books, staff, authentication, and email notifications.
 
 ## Tech Stack
 
 - **Framework**: FastAPI (async Python web framework)
-- **ORM**: SQLModel (SQLAlchemy + Pydantic)
-- **Database**: SQLite (file-based: `books.db`)
+- **ORM**: SQLAlchemy
+- **Database**: SQLite
 - **Server**: Uvicorn (ASGI server)
-- **Data Validation**: Pydantic
+- **Authentication**: JWT (JSON Web Tokens)
+- **Password Hashing**: bcrypt
 
 ## Project Structure
 
 ```
 LibGo/
-├── main.py                          # FastAPI application entry point
+├── main.py                          # Application entry point
 ├── pyproject.toml                   # Project configuration & dependencies
+├── uv.lock                          # Locked dependencies
+├── .env                             # Environment variables
+├── Dockerfile                       # Docker configuration
+├── .python-version                  # Python version
 ├── .gitignore                       # Git ignore patterns
 ├── books.db                         # SQLite database file
-└── src/
-    ├── db.py                        # Database engine, session, and table creation
+└── app/
+    ├── main.py                      # FastAPI application setup
+    ├── db/
+    │   ├── __init__.py
+    │   ├── base.py                  # SQLAlchemy base class
+    │   └── session.py               # Database session & table creation
     ├── core/
-    │   ├── config.py                # Application configuration (placeholder)
-    │   └── logging.py               # Custom logging utility
-    ├── schema/
-    │   └── BooksSchema.py           # Pydantic schemas for request/response validation
-    ├── api/v1/
-    │   └── books.py                  # API router with book endpoints
-    ├── services/books/
-    │   └── get_all_books.py          # Business logic layer for books
-    └── repos/books/
-        └── books_repo.py             # Data access layer with Book model and CRUD
+    │   ├── __init__.py
+    │   ├── config.py                # Application configuration
+    │   └── security.py              # Security utilities & logging
+    ├── dependencies/
+    │   ├── __init__.py
+    │   └── auth.py                  # Authentication dependency
+    ├── utils/
+    │   ├── __init__.py
+    │   └── hash_password.py         # Password hashing utility
+    └── modules/
+        ├── __init__.py
+        ├── auth/                    # Authentication module
+        │   ├── models.py            # Staff/Admin models
+        │   ├── schemas.py            # Pydantic schemas
+        │   ├── router.py             # API endpoints
+        │   └── service.py            # Business logic
+        ├── books/                   # Books management module
+        │   ├── models.py            # Book models
+        │   ├── schemas.py           # Pydantic schemas
+        │   ├── router.py            # API endpoints
+        │   └── service.py           # Business logic
+        ├── staff/                   # Staff management module
+        │   ├── models.py
+        │   ├── schemas.py
+        │   ├── router.py
+        │   └── service.py
+        └── email/                   # Email notification module
+            ├── router.py
+            └── service.py
 ```
 
 ## Key Components
 
-### `main.py`
+### `app/main.py`
 - FastAPI application setup with lifespan event handler
-- Creates database tables on startup
-- Registers the books router at `/books` prefix
+- Registers all routers with appropriate prefixes
 - Runs on `http://127.0.0.1:8000`
 
-### Database (`src/db.py`)
-- SQLite database connection using SQLModel
+### Database (`app/db/`)
+- SQLite database connection using SQLAlchemy
 - Session management for database operations
-- Automatic table creation via SQLModel metadata
+- Automatic table creation on application startup
 
-### Models & Schemas (`src/repos/books/books_repo.py`, `src/schema/BooksSchema.py`)
-- **Book Model**: UUID primary key, title, author, pages_count, reviews (JSON), likes (JSON)
-- **BooksCreate**: Schema for creating new books
-- **BookResponse**: Schema for book responses
+### Modules
+
+| Module | Prefix | Description |
+|--------|--------|-------------|
+| Auth | `/auth` | Authentication (login, register) |
+| Books | `/books` | Book CRUD operations |
+| Staff | `/admin` | Staff management |
+| Email | `/email` | Email notifications |
 
 ## API Endpoints
 
+### Authentication (`/auth`)
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/books/get-all-books` | Retrieve all books from the library |
+| POST | `/auth/admin-login` | Admin login |
+| POST | `/auth/staff-login` | Staff login |
+| POST | `/auth/staff-register` | Register new staff |
+
+### Books (`/books`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/books/get-all-books` | Retrieve all books |
+| POST | `/books/add-book` | Add a new book |
+| PUT | `/books/update-book/{book_id}` | Update a book |
+| DELETE | `/books/delete-book/{book_id}` | Delete a book |
+
+### Staff/Admin (`/admin`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/get-all-staff` | Retrieve all staff |
+| PUT | `/admin/update-staff/{staff_id}` | Update staff details |
+| DELETE | `/admin/delete-staff/{staff_id}` | Delete a staff member |
+
+### Email (`/email`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/email/send` | Send email notification |
+
+### General
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | GET | `/` | Root endpoint - Welcome message |
 
 ## Installation & Setup
@@ -73,34 +136,51 @@ LibGo/
    # uv sync
    ```
 
-3. **Run the application**:
+3. **Configure environment variables**:
+   Create a `.env` file with necessary variables (database URL, secret keys, etc.)
+
+4. **Run the application**:
    ```bash
-   python main.py
+   python -m app.main
    # Or:
-   # uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+   # uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
    ```
 
-4. **Access the API**:
+5. **Access the API**:
    - API docs: `http://127.0.0.1:8000/docs`
    - Alternative docs: `http://127.0.0.1:8000/redoc`
 
+## Docker Support
+
+Build and run with Docker:
+```bash
+docker build -t libgo .
+docker run -p 8000:8000 libgo
+```
+
 ## Current Features
 
-- **Get All Books**: Retrieves a list of all books in the database with their complete information including UUID, title, author, page count, reviews, and likes.
+- **Full CRUD Operations**: Create, Read, Update, Delete books
+- **Authentication**: JWT-based login for staff and admin
+- **Staff Management**: Register, update, and delete staff members
+- **Email Notifications**: Send email notifications
+- **Logging**: Custom logging for all operations
 
 ## Development Notes
 
-- The project follows a layered architecture: API → Service → Repository
-- Custom logging is implemented via `src/core/logging.py`
-- Database tables are automatically created on application startup
-- UUID is used for unique book identifiers
+- The project follows a modular architecture: Router → Service → Model
+- JWT-based authentication with role separation (Admin/Staff)
+- Passwords are securely hashed using bcrypt
+- All endpoints use dependency injection for database sessions
+- Custom logging implemented via `app/core/security.py`
 
 ## Future Enhancements
 
 Potential improvements for the project:
-- Complete CRUD operations (Create, Read, Update, Delete books)
-- User authentication and authorization
 - Book borrowing/return functionality
+- User membership management
 - Advanced search and filtering
-- Pagination for book listings
-- Input validation enhancements
+- Pagination for listings
+- Email templates
+- Docker Compose for multi-container setup
+- PostgreSQL support for production

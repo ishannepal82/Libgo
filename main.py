@@ -6,6 +6,7 @@ from app.modules.books.router import books_router
 from app.modules.email.router import email_router
 from app.modules.auth.router import auth_router
 from app.modules.staff.router import admin_router
+from app.modules.chat.routes import chat_router
 
 from app.db.session import create_all_tables
 
@@ -40,10 +41,16 @@ app.include_router(
     admin_router, prefix="/admin", tags=["admin", "staff", "remove", "edit"]
 )
 
+app.include_router(
+    chat_router, prefix="/chat", tags=["chat", "messages"]
+)
+
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to LibGo API!"}
+
+
 
 
 def main():

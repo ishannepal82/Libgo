@@ -1,10 +1,11 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from app.modules.chat.services import ws_service
+
 chat_router = APIRouter()
 
 
 @chat_router.websocket("/ws/{room_id}")
-async def websocket_endpoint(websocket: WebSocket, room_id: str = None):
+async def join_room(websocket: WebSocket, room_id: str = None):
     await ws_service.connect(websocket, room_id)
 
     try:

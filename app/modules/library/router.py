@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from app.modules.library.service import (
     create_library as service_create_library,
     get_library_by_id as service_get_library_by_id,
@@ -9,7 +9,7 @@ from app.modules.library.service import (
     LibraryDBException,
 )
 from app.modules.library.schemas import LibraryCreate, LibraryUpdate, LibraryResponse
-from app.modules.auth.dependencies import get_current_user
+from app.dependencies.auth import require_auth
 from app.core.logger import logger
 from app.db.session import get_session
 from uuid import UUID
@@ -18,13 +18,12 @@ library_router = APIRouter()
 
 
 @library_router.post("/create-library", response_model=LibraryResponse, status_code=201)
+@require_auth
 def create_library(
-    library_data: LibraryCreate,
-    db=Depends(get_session),
-    current_user=Depends(get_current_user),
+    user, library_data: LibraryCreate, db=Depends(get_session), request: Request = None
 ):
     try:
-        library = service_create_library(library_data, owner_id=current_user, db=db)
+        library = service_create_library(library_data, owner_id=user, db=db)
         logger.info(message="Successfully created library")
         return library
     except Exception as e:
@@ -35,9 +34,10 @@ def create_library(
 @library_router.get(
     "/my-libraries", response_model=list[LibraryResponse], status_code=200
 )
-def get_my_libraries(db=Depends(get_session), current_user=Depends(get_current_user)):
+@require_auth
+def get_my_libraries(user, db=Depends(get_session), request: Request = None):
     try:
-        libraries = service_get_my_libraries(owner_id=current_user, db=db)
+        libraries = service_get_my_libraries(owner_id=user, db=db)
         logger.info(message="Successfully fetched all libraries for current user")
         return libraries
     except Exception as e:
@@ -48,11 +48,12 @@ def get_my_libraries(db=Depends(get_session), current_user=Depends(get_current_u
 @library_router.get(
     "/get-library/{library_id}", response_model=LibraryResponse, status_code=200
 )
+@require_auth
 def get_library(
-    library_id: UUID, db=Depends(get_session), current_user=Depends(get_current_user)
+    user, library_id: UUID, db=Depends(get_session), request: Request = None
 ):
     try:
-        library = service_get_library_by_id(library_id, owner_id=current_user, db=db)
+        library = service_get_library_by_id(library_id, owner_id=user, db=db)
         logger.info(message=f"Successfully fetched library with id: {library_id}")
         return library
     except LibraryNotFoundError as e:
@@ -64,16 +65,16 @@ def get_library(
 
 
 @library_router.put("/update-library/{library_id}", response_model=LibraryResponse)
+@require_auth
 def update_library(
+    user,
     library_id: UUID,
     library_data: LibraryUpdate,
     db=Depends(get_session),
-    current_user=Depends(get_current_user),
+    request: Request = None,
 ):
     try:
-        library = service_update_library(
-            library_id, library_data, owner_id=current_user, db=db
-        )
+        library = service_update_library(library_id, library_data, owner_id=user, db=db)
         logger.info(message=f"Successfully updated library with id: {library_id}")
         return library
     except LibraryNotFoundError as e:
@@ -85,11 +86,12 @@ def update_library(
 
 
 @library_router.delete("/delete-library/{library_id}", status_code=204)
+@require_auth
 def delete_library(
-    library_id: UUID, db=Depends(get_session), current_user=Depends(get_current_user)
+    user, library_id: UUID, db=Depends(get_session), request: Request = None
 ):
     try:
-        service_delete_library(library_id, owner_id=current_user, db=db)
+        service_delete_library(library_id, owner_id=user, db=db)
         logger.info(message=f"Successfully deleted library with id: {library_id}")
         return {"message": "Library deleted successfully"}
     except LibraryNotFoundError as e:

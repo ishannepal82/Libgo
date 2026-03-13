@@ -1,7 +1,7 @@
 [project]
 name = "libgo"
 version = "0.1.0"
-description = "Add your description here"
+description = "Backend for Library Managment"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -16,5 +16,6 @@ dependencies = [
     "bcrypt>=5.0.0",
     "fastapi-users>=15.0.4",
     "python-jose>=3.5.0",
-    "uvicorn[standard]"
+    "uvicorn[standard]",
+    "slowapi>=0.1.9",
 ]

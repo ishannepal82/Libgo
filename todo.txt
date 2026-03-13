@@ -1,2 +1,4 @@
 Clear the JUNK in the auth module 
 Implement a better ws logic!
+Create a TODO Feature ? 
+Implment a library CRUD logic

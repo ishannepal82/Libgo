@@ -4,7 +4,6 @@ import os
 
 dotenv.load_dotenv()
 
-
 class Settings(BaseSettings):
     EMAIL: str = os.getenv("EMAIL")
     APP_PASSWORD: str = os.getenv("APP_PASSWORD")

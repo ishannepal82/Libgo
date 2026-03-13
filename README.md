@@ -5,7 +5,7 @@ LibGo is a powerful Library Management System built with FastAPI, designed to ma
 ## Tech Stack
 
 - **Framework**: FastAPI (async Python web framework)
-- **ORM**: SQLAlchemy
+- **ORM**: SQLModel
 - **Database**: SQLite
 - **Server**: Uvicorn (ASGI server)
 - **Authentication**: JWT (JSON Web Tokens)
@@ -184,3 +184,14 @@ Potential improvements for the project:
 - Email templates
 - Docker Compose for multi-container setup
 - PostgreSQL support for production
+
+# Admin Test: 
+{
+  "name": "Ishan",
+  "email": "ishannepal04@gmail.com",
+  "role": "Admin",
+  "password": "ishannepal04@gmail.com",
+  "code": "1204",
+  "phone": "9813920441",
+  "is_admin": true
+}

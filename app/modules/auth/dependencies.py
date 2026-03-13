@@ -6,7 +6,7 @@ from app.core.config import settings
 
 SECRET_KEY = settings.SECRET_KEY
 ALGRORITHM = settings.ALGORITHM
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/staff-login")
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try: 
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGRORITHM])

@@ -1,15 +1,15 @@
 from fastapi import WebSocket
+from typing import Dict, List, Tuple
 from collections import defaultdict
 
 class WebSocketService:
 
     def __init__(self):
         # room_id -> list of connections
-        self.rooms: dict[str, list[WebSocket]] = defaultdict(list)
-
-    async def connect(self, websocket: WebSocket, room_id: str):
+        self.rooms: Dict[str, List[Tuple[str, WebSocket]]] = defaultdict(list)
+    async def connect(self, websocket: WebSocket, room_id: str, user: str):
         await websocket.accept()
-        self.rooms[room_id].append(websocket)
+        self.rooms[room_id].append(room_id, user, websocket)
 
     def disconnect(self, websocket: WebSocket, room_id: str):
         if websocket in self.rooms[room_id]:

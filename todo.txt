@@ -1,1 +1,2 @@
 Clear the JUNK in the auth module 
+Implement a better ws logic!

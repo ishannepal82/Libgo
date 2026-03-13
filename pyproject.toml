@@ -16,4 +16,5 @@ dependencies = [
     "bcrypt>=5.0.0",
     "fastapi-users>=15.0.4",
     "python-jose>=3.5.0",
+    "uvicorn[standard]"
 ]

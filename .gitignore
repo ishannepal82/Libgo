@@ -13,3 +13,4 @@ env
 .env/
 env/
 *books.db
+credentials.txt

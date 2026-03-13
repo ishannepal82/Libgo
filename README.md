@@ -185,13 +185,3 @@ Potential improvements for the project:
 - Docker Compose for multi-container setup
 - PostgreSQL support for production
 
-# Admin Test: 
-{
-  "name": "Ishan",
-  "email": "ishannepal04@gmail.com",
-  "role": "Admin",
-  "password": "ishannepal04@gmail.com",
-  "code": "1204",
-  "phone": "9813920441",
-  "is_admin": true
-}

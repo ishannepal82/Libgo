@@ -1,15 +1,17 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi import BackgroundTasks
-from fastapi import HTTPException
 from app.modules.email.service import write_email as service_write_email
+from app.dependencies.auth import require_auth
 
 email_router = APIRouter()
 
 
 @email_router.post("/write-email")
-async def write_email(background_tasks: BackgroundTasks):
+@require_auth
+async def write_email(background_tasks: BackgroundTasks, request: Request = None):
     try:
+        user = request.state.user
         await service_write_email(
             subject="LibGo Testing",
             body="Hello from Fastapi",

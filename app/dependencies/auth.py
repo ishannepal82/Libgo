@@ -5,7 +5,8 @@ from app.modules.auth.dependencies import get_current_user as get_user
 from fastapi.exceptions import HTTPException
 from app.core.config import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/staff-login")
+token_url = settings.token_url
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_url)
 
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -26,9 +27,10 @@ def require_auth(f):
             if auth_header:
                 token = auth_header.split(" ")[1]
                 user = get_current_user(token)
+                request.state.user = user
                 if user:
                     print(user)
-                    return f(user, *args, **kwargs)
+                    return f(**kwargs)
 
         return HTTPException(status_code=401, detail="Unauthorized")
 

@@ -20,9 +20,10 @@ library_router = APIRouter()
 @library_router.post("/create-library", response_model=LibraryResponse, status_code=201)
 @require_auth
 def create_library(
-    user, library_data: LibraryCreate, db=Depends(get_session), request: Request = None
+    library_data: LibraryCreate, db=Depends(get_session), request: Request = None
 ):
     try:
+        user = request.state.user
         library = service_create_library(library_data, owner_id=user, db=db)
         logger.info(message="Successfully created library")
         return library
@@ -57,7 +58,7 @@ def get_library(
         logger.info(message=f"Successfully fetched library with id: {library_id}")
         return library
     except LibraryNotFoundError as e:
-        logger.warning(msg=str(e))
+        logger.warning(message=str(e))
         raise HTTPException(detail=str(e), status_code=404)
     except Exception as e:
         logger.warning(message=f"Something went wrong: {e}")
@@ -78,7 +79,7 @@ def update_library(
         logger.info(message=f"Successfully updated library with id: {library_id}")
         return library
     except LibraryNotFoundError as e:
-        logger.warning(msg=str(e))
+        logger.warning(message=str(e))
         raise HTTPException(detail=str(e), status_code=404)
     except Exception as e:
         logger.warning(message=f"Something went wrong: {e}")
@@ -95,7 +96,7 @@ def delete_library(
         logger.info(message=f"Successfully deleted library with id: {library_id}")
         return {"message": "Library deleted successfully"}
     except LibraryNotFoundError as e:
-        logger.warning(msg=str(e))
+        logger.warning(message=str(e))
         raise HTTPException(detail=str(e), status_code=404)
     except Exception as e:
         logger.warning(message=f"Something went wrong: {e}")

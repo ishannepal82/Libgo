@@ -1,3 +1,4 @@
+from fastapi import Response
 from app.core.logger import logger
 from app.modules.auth.repo import (
     Staff,
@@ -13,7 +14,7 @@ class StaffNotFoundError(Exception):
     pass
 
 
-def staff_login(db, login_data):
+def staff_login(db, login_data, res: Response):
     try:
         email = login_data.get("email")
         password = login_data.get("password")
@@ -31,9 +32,17 @@ def staff_login(db, login_data):
             raise ValueError("Invalid password")
 
         logger.info("Admin logged in successfully")
+        refresh_token = create_token(login_data.email)
+        res.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,
+            samesite="lax",
+            secure=True
+        )
 
-        token = create_token(login_data.email)
-        return {"access_token": token, "token_type": "bearer"}
+        access_token = create_token(login_data.email)
+        return {"access_token": access_token, :"refresh_token" "token_type": "bearer"}
     except Exception as e:
         logger.error(str(e))
         raise Exception("Staff login failed")
